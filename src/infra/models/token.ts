@@ -1,9 +1,9 @@
 import { prop, Ref } from "@typegoose/typegoose";
 
-import { BaseModel } from ".";
-import { User } from "./user";
+import BaseModel from ".";
+import User from "./user";
 
-export class RefreshToken extends BaseModel<RefreshToken> {
+class RefreshToken extends BaseModel<RefreshToken> {
   @prop({ required: true, type: String })
   token!: string;
 
@@ -13,3 +13,5 @@ export class RefreshToken extends BaseModel<RefreshToken> {
   @prop({ required: true, ref: User })
   userId!: Ref<User>;
 }
+
+export default RefreshToken;

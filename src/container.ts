@@ -1,25 +1,33 @@
 import "reflect-metadata";
+import path from "node:path";
+import { glob } from "glob";
 import { Container } from "inversify";
+import { Connection, model } from "mongoose";
 
 import AppServer from "./server/http";
 import Database from "./config/db";
 
-import UserRouter from "./server/http/routes/user";
-import UserController from "./server/http/controllers/user";
 import UserService from "./domain/service/user";
+import UserRouter from "./server/http/routes/user";
 import UserRepository from "./infra/repository/user";
+import UserController from "./server/http/controllers/user";
 
-import { User } from "./infra/models/user";
-import PasswordService from "./domain/service/password";
 import TokenManager from "./domain/service/token";
-import AuthUseCase from "./application/useCase/authUseCase";
-import AuthController from "./server/http/controllers/authenticate";
-import AuthRouter from "./server/http/routes/auth";
+import CronJobManager from "./domain/service/cron";
+import PasswordService from "./domain/service/password";
 import AuthStrategy from "./domain/service/authenticate";
 import EmailPasswordStrategy from "./domain/service/authenticate/emailPassword";
+
+// import { User } from "./infra/models/user";
+import AuthUseCase from "./application/useCase/authUseCase";
+
+import AuthRouter from "./server/http/routes/auth";
+import AuthController from "./server/http/controllers/authenticate";
+
+// import { RefreshToken } from "./infra/models/token";
 import TokenRepository from "./infra/repository/token";
-import { RefreshToken } from "./infra/models/token";
-import CronJobManager from "./domain/service/cron";
+
+import { __dirname } from "./utils/dirname";
 
 class AppContainer {
   private static instance: Container;
@@ -71,10 +79,23 @@ class AppContainer {
     const connection = database.getConnection();
 
     if (connection) {
-      User.initializeModel(connection);
-      RefreshToken.initializeModel(connection);
+      await AppContainer.initializeModels(connection);
     } else {
       console.error("❌ Erro: Conexão com o banco não está disponível.");
+    }
+  }
+
+  private static async initializeModels(connection: Connection) {
+    const modelsPath = path.resolve(__dirname, "./infra/models/**/*.ts");
+    const files = glob.sync(modelsPath);
+
+    for (const file of files) {
+      if (file.includes("index")) continue;
+
+      const modelModule = await import(file);
+      const modelClass = modelModule.default;
+
+      if (modelClass?.initializeModel) modelClass.initializeModel(connection);
     }
   }
 }

@@ -1,11 +1,8 @@
 import i18n from "i18n";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { __dirname } from "../utils/dirname";
 
-const currentFilePath = fileURLToPath(import.meta.url);
-const currentDir = path.dirname(currentFilePath);
-
-const localesPath = path.join(currentDir, "../locales");
+const localesPath = path.join(__dirname, "../locales");
 
 i18n.configure({
   locales: ["pt-br", "en"],

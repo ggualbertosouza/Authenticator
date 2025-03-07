@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { RefreshToken } from "../models/token";
+import RefreshToken from "../models/token";
 import mongoose from "mongoose";
 
 @injectable()
