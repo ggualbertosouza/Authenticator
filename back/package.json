@@ -38,6 +38,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@azure/msal-node": "^3.3.0",
     "@typegoose/typegoose": "^12.10.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
