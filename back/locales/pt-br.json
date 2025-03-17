@@ -1,0 +1,9 @@
+{
+	"user_not_found": "user_not_found",
+	"unable_account": "unable_account",
+	"user_inactive": "user_inactive",
+	"Not allowed by CORS": "Not allowed by CORS",
+	"credentials_invalid": "credentials_invalid",
+	"argument name is invalid": "argument name is invalid",
+	"hex string must be 24 characters": "hex string must be 24 characters"
+}
