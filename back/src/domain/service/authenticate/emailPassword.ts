@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { inject, injectable } from "inversify";
 
 import {
@@ -9,7 +8,6 @@ import {
 import AuthStrategy from ".";
 import TokenManager from "../token";
 import PasswordService from "../password";
-import User from "../../../infra/models/user";
 import UserRepository from "../../../infra/repository/user";
 import { AuthResponse } from "../../../application/dto/user";
 
@@ -42,38 +40,21 @@ class EmailPasswordStrategy extends AuthStrategy {
     if (!user) throw userNotFound;
     if (!user.active) throw userInactive;
 
-    const verifyPassword = await this.passwordService.decrypt(
-      credentials.password,
-      user.password
-    );
-    if (!verifyPassword) throw userCredentialsInvalid;
+    this.verifyPassword(user.password, credentials.password);
 
     const accessToken = this.tokenManager.generateAccessToken(user);
     const refreshToken = await this.tokenManager.generateRefreshToken(user._id);
 
-    return this.formatResponse(user, accessToken, refreshToken);
+    return { accessToken, refreshToken };
   }
 
-  private formatResponse(
-    user: User & { _id: mongoose.Types.ObjectId },
-    accessToken: string,
-    refreshToken: string
-  ) {
-    const { _id, name, email, role } = user;
-
-    return {
-      success: true,
-      data: {
-        accessToken,
-        refreshToken,
-        user: {
-          id: String(_id),
-          name,
-          email,
-          role,
-        },
-      },
-    };
+  private async verifyPassword(hashedPassword: string, password: string) {
+    const verifyPassword = await this.passwordService.decrypt(
+      password,
+      hashedPassword
+    );
+    
+    if (!verifyPassword) throw userCredentialsInvalid;
   }
 }
 

@@ -1,17 +1,17 @@
 "use client";
 
+import * as React from "react";
+
 import useAuthStore from "@/store/auth";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 
 const AuthRedirect = () => {
   const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
+  const { token } = useAuthStore();
 
   React.useEffect(() => {
-    if (isAuthenticated) router.push("/");
-    if (!isAuthenticated) router.push("/auth/login");
-  }, [router, isAuthenticated]);
+    if (!token) router.push("/auth/login");
+  }, [router, token]);
 
   return null;
 };

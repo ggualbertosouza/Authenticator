@@ -6,7 +6,7 @@ export type User = {
 
 export type AuthState = {
   user: User | null;
-  isAuthenticated: boolean;
-  login: (data: User) => void;
+  token: string | null;
+  login: (token: string) => void;
   logout: () => void;
 };

@@ -1,9 +1,11 @@
 import { inject, injectable } from "inversify";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction } from "express";
 
+import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
+
+import { NODE_ENV } from "../../../config";
 import AuthUseCase from "../../../application/useCase/authUseCase";
 import EmailPasswordStrategy from "../../../domain/service/authenticate/emailPassword";
-import { NODE_ENV } from "../../../config";
 
 @injectable()
 class AuthController {
@@ -19,24 +21,25 @@ class AuthController {
   }
 
   public loginWithEmailPassword() {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (
+      req: RequestAdapter,
+      res: ResponseAdapter,
+      next: NextFunction
+    ) => {
       try {
         this.authUseCase.setStrategy(this.emailPassword);
         const authResponse = await this.authUseCase.execute(req.body);
 
-        const {
-          data: { refreshToken },
-          ...result
-        } = authResponse;
+        const { accessToken, refreshToken } = authResponse;
 
-        res.cookie("/refresh-token", refreshToken, {
+        res.cookie("refresh-token", refreshToken, {
           httpOnly: true,
           secure: NODE_ENV === "production",
           sameSite: "strict",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
-        res.status(200).json(result);
+        res.status(200).json(accessToken);
       } catch (error) {
         next(error);
       }

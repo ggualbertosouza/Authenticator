@@ -8,17 +8,11 @@ class AuthService {
   }
 
   public async login(data: { email: string; password: string }) {
-    const user = this.apiClient.post({
+    return await this.apiClient.post({
       endpoint: "/api/user/login",
       showLoading: true,
       data,
     });
-
-    // Criar estado global com zustand para salvar accessToken
-    // tanto o estado quanto a função que setta o estado
-    // Na classe de requisição, verificar antes de qualquer req se existe salvo no estado global o access Token
-    //se existir adicionar
-    console.log(user);
   }
 
   public async register(data: {
@@ -26,13 +20,11 @@ class AuthService {
     email: string;
     password: string;
   }) {
-    const user = this.apiClient.post({
+    return this.apiClient.post({
       endpoint: "/api/user/signup",
       showLoading: true,
       data,
     });
-
-    console.log(user);
   }
 }
 

@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import { inject, injectable } from "inversify";
 import { NextFunction, Request, Response } from "express";
 
-import UserService from "../../../domain/service/user";
+import UserService from "../../../domain/service/user/index";
+import { RequestAdapter } from "../../../@types/server";
 
 @injectable()
 class UserController {
@@ -24,13 +25,10 @@ class UserController {
   }
 
   public findUser() {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (req: RequestAdapter, res: Response, next: NextFunction) => {
       try {
-        const { id } = req.params;
-
-        const user = await this.userService.findUser(
-          mongoose.Types.ObjectId.createFromHexString(id)
-        );
+        const tokenInfo = req.token!;
+        const user = await this.userService.findUser(tokenInfo);
 
         res.status(200).json(user);
       } catch (error) {

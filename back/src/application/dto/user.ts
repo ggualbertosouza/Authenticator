@@ -5,15 +5,6 @@ export type UserRequest = {
 };
 
 export type AuthResponse = {
-  success: boolean;
-  data: {
-    accessToken: string;
-    refreshToken?: string;
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      role: string;
-    };
-  };
+  accessToken: string;
+  refreshToken?: string;
 };

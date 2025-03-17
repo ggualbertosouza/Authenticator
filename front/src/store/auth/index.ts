@@ -7,12 +7,12 @@ const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      isAuthenticated: false,
-      login: (data) => {
-        set({ user: data, isAuthenticated: true });
+      token: null,
+      login: (token) => {
+        set({ token });
       },
       logout: () => {
-        set({ user: null, isAuthenticated: false });
+        set({ user: null, token: null });
       },
     }),
     {

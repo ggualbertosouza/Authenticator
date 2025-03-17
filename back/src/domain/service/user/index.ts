@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 import { inject, injectable } from "inversify";
 
-import UserRepository from "../../infra/repository/user";
 import {
   UserAlreadyExist,
   userInactive,
   userNotFound,
-  userCredentialsInvalid,
-} from "../errors/user";
-import { UserRequest } from "../../application/dto/user";
-import PasswordService from "./password";
+} from "../../errors/user";
+import PasswordService from "../password";
+import UserRepository from "../../../infra/repository/user";
+import { UserRequest } from "../../../application/dto/user";
+import { TokenPayload } from "../../../@types/token";
 
 @injectable()
 class UserService {
@@ -38,9 +38,10 @@ class UserService {
     return userAuthenticated;
   }
 
-  public async findUser(id: mongoose.Types.ObjectId) {
-    const user = await this.userRepository.findUser(id);
-
+  public async findUser(token: TokenPayload) {
+    const user = await this.userRepository.findUser(
+      mongoose.Types.ObjectId.createFromHexString(token.userId)
+    );
     if (!user) throw userNotFound;
     if (!user.active) throw userInactive;
 

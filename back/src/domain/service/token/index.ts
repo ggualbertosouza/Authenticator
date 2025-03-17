@@ -1,11 +1,13 @@
-import { inject, injectable } from "inversify";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import { inject, injectable } from "inversify";
 
+import CronJobManager from "../cron";
 import { TOKEN } from "../../../config";
 import TokenRepository from "../../../infra/repository/token";
 import { invalidToken, refreshTokenError } from "../../errors/token";
-import mongoose from "mongoose";
-import CronJobManager from "../cron";
+
+import { TokenPayload } from "../../../@types/token";
 
 @injectable()
 class TokenManager {
@@ -39,10 +41,7 @@ class TokenManager {
 
   public validateAccessToken(token: string): { userId: string; role: string } {
     try {
-      return jwt.verify(token, this.ACCESS_TOKEN_SECRET) as {
-        userId: string;
-        role: string;
-      };
+      return jwt.verify(token, this.ACCESS_TOKEN_SECRET) as TokenPayload;
     } catch (error) {
       throw invalidToken;
     }

@@ -7,10 +7,12 @@ import { Connection, model } from "mongoose";
 import AppServer from "./server/http";
 import Database from "./config/db";
 
-import UserService from "./domain/service/user";
+import UserService from "./domain/service/user/index";
 import UserRouter from "./server/http/routes/user";
 import UserRepository from "./infra/repository/user";
 import UserController from "./server/http/controllers/user";
+
+import AuthMiddleware from "./server/http/middlewares/auth";
 
 import TokenManager from "./domain/service/token";
 import CronJobManager from "./domain/service/cron";
@@ -55,6 +57,7 @@ class AppContainer {
     container.bind(UserRepository).toSelf().inSingletonScope();
 
     // Authentication
+    container.bind(AuthMiddleware).toSelf().inSingletonScope();
     container.bind(AuthUseCase).toSelf().inSingletonScope();
     container.bind(AuthStrategy).toSelf().inSingletonScope();
     container.bind(EmailPasswordStrategy).toSelf().inSingletonScope();

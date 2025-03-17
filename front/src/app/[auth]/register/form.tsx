@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { registerFormSchema, registerForm } from "./schema";
 import AuthService from "@/services/authService";
 
@@ -14,10 +15,17 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit = (data: registerForm) => {
-    const { name, email, password, confirmPassword } = data;
-    const api = new AuthService();
-    api.register({ name, email, password });
+  const onSubmit = async (data: registerForm) => {
+    const { name, email, password } = data;
+
+    try {
+      const api = new AuthService();
+      await api.register({ name, email, password });
+
+      window.location.href = "/auth/login";
+    } catch {
+      form.reset();
+    }
   };
 
   return {

@@ -3,7 +3,6 @@ import "reflect-metadata";
 import AppContainer from "./container";
 import AppServer from "./server/http";
 import CronJobManager from "./domain/service/cron";
-import { DB_STRING } from "./config";
 
 const container = await AppContainer.getInstance();
 
