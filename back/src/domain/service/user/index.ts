@@ -6,7 +6,7 @@ import {
   UserAlreadyExist,
   userInactive,
   userNotFound,
-} from "../../errors/user";
+} from "../../errors/index";
 import PasswordService from "../password";
 import UserRepository from "../../../infra/repository/user";
 import { UserRequest } from "../../../application/dto/user";

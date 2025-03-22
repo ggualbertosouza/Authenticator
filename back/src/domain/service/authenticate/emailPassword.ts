@@ -5,7 +5,7 @@ import {
   userCredentialsInvalid,
   userInactive,
   userNotFound,
-} from "../../errors/user";
+} from "../../errors/index";
 import AuthStrategy from ".";
 import TokenManager from "../token";
 import PasswordService from "../password";
