@@ -2,7 +2,7 @@ import "reflect-metadata";
 import cors from "cors";
 import http from "node:http";
 import cookieParser from "cookie-parser";
-import { injectable } from "inversify";
+import { Injectable } from "../../utils/inversify";
 import express, { Express } from "express";
 
 import i18n from "../../config/i18n";
@@ -12,8 +12,13 @@ import UserRouter from "./routes/user";
 import { ErrorHandler } from "./middlewares/errorHandler";
 
 import AuthRouter from "./routes/auth";
+import { BINDINGSCOPE } from "../../@types/inverisfy";
 
-@injectable()
+
+@Injectable({
+  key: AppServer,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class AppServer {
   private app: Express;
   private server: http.Server | null = null;

@@ -1,11 +1,16 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 
 import AbstractRouter from ".";
 import UserController from "../controllers/user";
 import AuthMiddleware from "../middlewares/auth";
 import { BaseMiddleware } from "../middlewares";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: UserRouter,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class UserRouter extends AbstractRouter {
   private userController: UserController;
   private middAuth: BaseMiddleware;

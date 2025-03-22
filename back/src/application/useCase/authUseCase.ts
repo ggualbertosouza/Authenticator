@@ -1,8 +1,14 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../utils/inversify";
+
 import AuthStrategy from "../../domain/service/authenticate";
 import { AuthResponse } from "../dto/user";
+import { BINDINGSCOPE } from "../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: AuthUseCase,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class AuthUseCase {
   private strategy: AuthStrategy;
 

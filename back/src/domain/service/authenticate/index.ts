@@ -1,15 +1,21 @@
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 import { AuthResponse } from "../../../application/dto/user";
+import { Injectable } from "../../../utils/inversify";
 
+enum AuthStrategies {
+  EMAILPASSWORD = "EmailPassword",
+}
+
+@Injectable({
+  key: AuthStrategy,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 abstract class AuthStrategy {
-  // Template Method - Define flow of authenticate
   public async authenticate(credentials: any): Promise<AuthResponse> {
-    // 1. Authenticate User
     const authResult = await this.authenticateUser(credentials);
 
-    // 2. Register audiction
     await this.logAuthentication(authResult);
 
-    // 3. Return user
     return authResult;
   }
 

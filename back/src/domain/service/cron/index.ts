@@ -1,7 +1,11 @@
 import cron from "node-cron";
-import { injectable } from "inversify";
+import { Injectable } from "../../../utils/inversify";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: CronJobManager,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class CronJobManager {
   private jobs: Map<string, cron.ScheduledTask>;
 

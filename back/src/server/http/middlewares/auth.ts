@@ -1,12 +1,17 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 
 import TokenManager from "../../../domain/service/token";
 import { BaseMiddleware } from ".";
 import { NextFunction } from "express";
 import { invalidToken } from "../../../domain/errors/token";
 import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: AuthMiddleware,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class AuthMiddleware extends BaseMiddleware {
   private tokenManager: TokenManager;
 

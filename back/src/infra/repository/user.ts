@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
-import { injectable } from "inversify";
+import { Injectable } from "../../utils/inversify";
 
 import User from "../models/user";
+import { BINDINGSCOPE } from "../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: UserRepository,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class UserRepository {
   private userModel = User.getModel();
 

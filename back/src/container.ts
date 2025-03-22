@@ -6,25 +6,8 @@ import { glob } from "glob";
 
 import Database from "./config/db";
 import { __dirname } from "./utils/dirname";
-
-import UserRepository from "./infra/repository/user";
-import TokenRepository from "./infra/repository/token";
-
-import AppServer from "./server/http";
-import UserRouter from "./server/http/routes/user";
-import AuthRouter from "./server/http/routes/auth";
-import UserController from "./server/http/controllers/user";
-import AuthMiddleware from "./server/http/middlewares/auth";
-import AuthController from "./server/http/controllers/authenticate";
-
-import UserService from "./domain/service/user/index";
-import PasswordService from "./domain/service/password";
-import AuthStrategy from "./domain/service/authenticate";
-import EmailPasswordStrategy from "./domain/service/authenticate/emailPassword";
-
-import AuthUseCase from "./application/useCase/authUseCase";
-import TokenManager from "./domain/service/token";
-import CronJobManager from "./domain/service/cron";
+import { registeredDependencies } from "./utils/inversify";
+import { BINDINGSCOPE, METADATA } from "./@types/inverisfy";
 
 class AppContainer {
   private static instance: Container;
@@ -33,7 +16,7 @@ class AppContainer {
     if (!AppContainer.instance) {
       const container = new Container();
 
-      AppContainer.setup(container);
+      await AppContainer.injectDependecies(container, registeredDependencies);
       await AppContainer.loadDb(container);
       AppContainer.instance = container;
     }
@@ -41,33 +24,36 @@ class AppContainer {
     return AppContainer.instance;
   }
 
-  private static async setup(container: Container): Promise<void> {
-    container.bind(AppServer).toSelf().inSingletonScope();
-    container.bind(Database).toSelf().inSingletonScope();
+  private static async injectDependecies(
+    container: Container,
+    registeredDependencies: any[]
+  ): Promise<void> {
+    for (const module of registeredDependencies) {
+      const bindingMetadata = Reflect.getMetadata(METADATA.INJECTABLE, module);
 
-    // User
-    container.bind(UserRouter).toSelf().inSingletonScope();
-    container.bind(UserController).toSelf().inSingletonScope();
-    container.bind(UserService).toSelf().inSingletonScope();
-    container.bind(UserRepository).toSelf().inSingletonScope();
+      if (bindingMetadata) {
+        const { key, name, scope } = bindingMetadata;
 
-    // Authentication
-    container.bind(AuthMiddleware).toSelf().inSingletonScope();
-    container.bind(AuthUseCase).toSelf().inSingletonScope();
-    container.bind(AuthStrategy).toSelf().inSingletonScope();
-    container.bind(EmailPasswordStrategy).toSelf().inSingletonScope();
-    container.bind(AuthRouter).toSelf().inSingletonScope();
-    container.bind(AuthController).toSelf().inSingletonScope();
-
-    // Password
-    container.bind(PasswordService).toSelf().inSingletonScope();
-
-    // Token
-    container.bind(TokenManager).toSelf().inSingletonScope();
-    container.bind(TokenRepository).toSelf().inSingletonScope();
-
-    // Utils
-    container.bind(CronJobManager).toSelf().inSingletonScope();
+        const binding = container.bind(key).to(module);
+        if (name) binding.whenTargetNamed(name);
+        if (scope) {
+          switch (scope) {
+            case BINDINGSCOPE.SINGLETON:
+              binding.inSingletonScope();
+              break;
+            case BINDINGSCOPE.REQUEST:
+              binding.inRequestScope();
+              break;
+            case BINDINGSCOPE.TRANSIENT:
+              binding.inTransientScope();
+              break;
+            default:
+              binding.inSingletonScope();
+              break;
+          }
+        }
+      }
+    }
   }
 
   private static async loadDb(container: Container): Promise<void> {
