@@ -23,11 +23,8 @@ services:
       context: ./back
       dockerfile: Dockerfile
     container_name: backend
-    environment:
-      MONGO_URI: ${MONGO_URI}
-      PORT: ${BACKEND_PORT}
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "4000:4000"
     depend_on:
       db:
         condition: service_healthy
