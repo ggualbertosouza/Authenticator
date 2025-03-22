@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mongo:6.0
+    container_name: database
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - database:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-networks
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      PORT: ${BACKEND_PORT}
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depend_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+volumes:
+  database:
+
+networks:
+  app-network:
