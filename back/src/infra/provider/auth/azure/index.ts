@@ -7,7 +7,7 @@ import {
   azureAcquireTokenError,
   azureFetchError,
   azureGenerateUrlError,
-} from "../../../../domain/errors/azure";
+} from "../../../../domain/errors/index";
 
 interface UserInfo {
   id: string;
@@ -29,7 +29,7 @@ class AzureAuthProvider extends OAuthProvider {
       },
     });
   }
-
+  /* Gera URL de autorização para redirecionar o usuário ao Azure AD */
   public async getAuthUrl(
     redirectUri: string,
     scopes: string[] = ["user.read"]
@@ -45,6 +45,7 @@ class AzureAuthProvider extends OAuthProvider {
     }
   }
 
+  /* Obtém os tokens de acesso usando o código de autorização */
   public async getTokens(
     code: string,
     redirectUri: string,
@@ -66,6 +67,7 @@ class AzureAuthProvider extends OAuthProvider {
     }
   }
 
+  /* Obtém as informações do usuário usando o token de acesso */
   public async getUserInfo(accessToken: string): Promise<any> {
     try {
       const response = await axios.get("https://graph.microsoft.com/v1.0/me", {

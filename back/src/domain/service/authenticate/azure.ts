@@ -5,7 +5,7 @@ import { AuthResponse } from "../../../application/dto/user";
 import AzureAuthProvider from "../../../infra/provider/auth/azure";
 import { Injectable } from "../../../utils/inversify";
 import UserRepository from "../../../infra/repository/user";
-import { userInactive, userNotFound } from "../../errors/user";
+import { userInactive, userNotFound } from "../../errors/index";
 import TokenManager from "../token";
 
 @Injectable({
