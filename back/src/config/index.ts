@@ -22,5 +22,4 @@ export const AZURE = {
   TENANT_ID: process.env.TENANT_ID || "",
   CLIENT_ID: process.env.AZURE_CLIENT_ID || "",
   AZURE_SECRET: process.env.AZURE_SECRET || "",
-  AZURE_CALLBACK_URL: process.env.AZURE_CALLBACK_URL || "",
 };
