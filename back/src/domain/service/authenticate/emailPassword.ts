@@ -1,4 +1,5 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 
 import {
   userCredentialsInvalid,
@@ -10,13 +11,17 @@ import TokenManager from "../token";
 import PasswordService from "../password";
 import UserRepository from "../../../infra/repository/user";
 import { AuthResponse } from "../../../application/dto/user";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
 type userCredentials = {
   email: string;
   password: string;
 };
 
-@injectable()
+@Injectable({
+  key: EmailPasswordStrategy,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class EmailPasswordStrategy extends AuthStrategy {
   private userRepository: UserRepository;
   private passwordService: PasswordService;
@@ -53,7 +58,7 @@ class EmailPasswordStrategy extends AuthStrategy {
       password,
       hashedPassword
     );
-    
+
     if (!verifyPassword) throw userCredentialsInvalid;
   }
 }

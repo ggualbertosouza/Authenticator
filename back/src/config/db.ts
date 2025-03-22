@@ -1,9 +1,13 @@
 import mongoose, { type Connection } from "mongoose";
-import { injectable } from "inversify";
+import { Injectable } from "../utils/inversify";
 
 import { DB_STRING } from ".";
+import { BINDINGSCOPE } from "../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: Database,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class Database {
   private instance: Connection | null = null;
 

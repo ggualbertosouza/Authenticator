@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 
 import {
   UserAlreadyExist,
@@ -10,8 +11,12 @@ import PasswordService from "../password";
 import UserRepository from "../../../infra/repository/user";
 import { UserRequest } from "../../../application/dto/user";
 import { TokenPayload } from "../../../@types/token";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: UserService,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class UserService {
   private userRepository: UserRepository;
   private passwordService: PasswordService;

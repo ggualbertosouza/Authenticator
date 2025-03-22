@@ -1,8 +1,13 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 import AbstractRouter from ".";
 import AuthController from "../controllers/authenticate";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: AuthRouter,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class AuthRouter extends AbstractRouter {
   private authController: AuthController;
 

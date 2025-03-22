@@ -1,8 +1,14 @@
-import { injectable } from "inversify";
-import RefreshToken from "../models/token";
 import mongoose from "mongoose";
+import { Injectable } from "../../utils/inversify";
 
-@injectable()
+import RefreshToken from "../models/token";
+
+import { BINDINGSCOPE } from "../../@types/inverisfy";
+
+@Injectable({
+  key: TokenRepository,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class TokenRepository {
   private tokenModel = RefreshToken.getModel();
 

@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 import { NextFunction, Request, Response } from "express";
 
 import UserService from "../../../domain/service/user/index";
 import { RequestAdapter } from "../../../@types/server";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: UserController,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class UserController {
   private userService: UserService;
 

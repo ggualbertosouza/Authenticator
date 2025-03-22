@@ -1,4 +1,5 @@
-import { inject, injectable } from "inversify";
+import { inject } from "inversify";
+import { Injectable } from "../../../utils/inversify";
 import { NextFunction } from "express";
 
 import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
@@ -6,8 +7,12 @@ import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
 import { NODE_ENV } from "../../../config";
 import AuthUseCase from "../../../application/useCase/authUseCase";
 import EmailPasswordStrategy from "../../../domain/service/authenticate/emailPassword";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: AuthController,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class AuthController {
   private authUseCase: AuthUseCase;
   private emailPassword: EmailPasswordStrategy;

@@ -1,8 +1,12 @@
 import { randomBytes, pbkdf2 } from "node:crypto";
 import { BadRequest } from "../../errors";
-import { injectable } from "inversify";
+import { Injectable } from "../../../utils/inversify";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
-@injectable()
+@Injectable({
+  key: PasswordService,
+  scope: BINDINGSCOPE.SINGLETON,
+})
 class PasswordService {
   private ITERATIONS = 10000;
   private KEY_LENGTH = 64;
