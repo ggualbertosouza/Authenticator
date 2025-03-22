@@ -6,5 +6,8 @@
   "credentials_invalid": "Invalid email or password. Please check your credentials.",
   "INTERNAL_SERVER_ERROR": "Internal server error",
   "refresh_token_error": "Error while generating refresh token",
-  "invalid_token": "Invalid token"
+  "invalid_token": "Invalid token",
+  "azure_url_generate": "Failed to generate Azure auth URL",
+  "azure_acquire_error": "Failed to acquire Azure tokens",
+  "azure_user_info": "Failed to fetch Azure user info"
 }

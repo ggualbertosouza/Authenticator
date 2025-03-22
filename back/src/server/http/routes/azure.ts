@@ -17,5 +17,9 @@ class AzureRouter extends AbstractRouter {
       "/oauth/azure/url",
       this.azureController.azureGetRedirectUri()
     );
+    this.router.post(
+      "/oauth/azure/callback",
+      this.azureController.azureAuthenticate()
+    );
   }
 }

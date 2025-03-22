@@ -1,7 +1,20 @@
+import axios from "axios";
 import { ConfidentialClientApplication } from "@azure/msal-node";
 
 import { OAuthProvider } from "..";
 import { AZURE } from "../../../../config";
+import {
+  azureAcquireTokenError,
+  azureFetchError,
+  azureGenerateUrlError,
+} from "../../../../domain/errors/azure";
+
+interface UserInfo {
+  id: string;
+  displayName: string;
+  email: string;
+  userPrincipalName: string;
+}
 
 class AzureAuthProvider extends OAuthProvider {
   private msalInstance: ConfidentialClientApplication;
@@ -21,7 +34,15 @@ class AzureAuthProvider extends OAuthProvider {
     redirectUri: string,
     scopes: string[] = ["user.read"]
   ) {
-    return this.msalInstance.getAuthCodeUrl({ scopes, redirectUri });
+    try {
+      return await this.msalInstance.getAuthCodeUrl({
+        scopes,
+        redirectUri,
+      });
+    } catch (error) {
+      console.error("Failed to generate Azure auth URL:", error);
+      throw azureGenerateUrlError;
+    }
   }
 
   public async getTokens(
@@ -29,23 +50,37 @@ class AzureAuthProvider extends OAuthProvider {
     redirectUri: string,
     scopes: string[] = ["user.read"]
   ): Promise<string> {
-    const tokens = await this.msalInstance.acquireTokenByCode({
-      code,
-      redirectUri,
-      scopes,
-    });
+    try {
+      const tokenResponse = await this.msalInstance.acquireTokenByCode({
+        code,
+        redirectUri,
+        scopes,
+      });
 
-    return tokens.accessToken;
+      if (!tokenResponse.accessToken) throw azureAcquireTokenError;
+
+      return tokenResponse.accessToken;
+    } catch (error) {
+      console.error("Failed to acquire Azure tokens:", error);
+      throw azureAcquireTokenError;
+    }
   }
 
   public async getUserInfo(accessToken: string): Promise<any> {
-    const response = await fetch("https://graph.microsoft.com/v1.0/me", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    try {
+      const response = await axios.get("https://graph.microsoft.com/v1.0/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    return response.json();
+      if (response.status !== 200) throw azureFetchError;
+
+      return response.data as UserInfo;
+    } catch (error) {
+      console.error("Failed to fetch Azure user info:", error);
+      throw azureFetchError;
+    }
   }
 }
 
