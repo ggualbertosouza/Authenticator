@@ -1,13 +1,13 @@
 import { inject } from "inversify";
-import { Injectable } from "../../../utils/inversify";
 import { NextFunction } from "express";
+import { Injectable } from "../../../utils/inversify";
 
 import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
+import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
 import { NODE_ENV } from "../../../config";
 import AuthUseCase from "../../../application/useCase/authUseCase";
 import EmailPasswordStrategy from "../../../domain/service/authenticate/emailPassword";
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
 @Injectable({
   key: AuthController,
