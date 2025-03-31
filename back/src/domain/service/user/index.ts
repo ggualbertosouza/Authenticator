@@ -6,9 +6,9 @@ import {
   UserAlreadyExist,
   userInactive,
   userNotFound,
-} from "../../errors/index";
+} from "../../../infra/error/index";
 import PasswordService from "../password";
-import UserRepository from "../../../infra/repository/user";
+import UserRepository from "../../../infra/repositories/user";
 import { UserRequest } from "../../../application/dto/user";
 import { TokenPayload } from "../../../@types/token";
 import { BINDINGSCOPE } from "../../../@types/inverisfy";

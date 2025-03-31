@@ -5,23 +5,18 @@ import {
   userCredentialsInvalid,
   userInactive,
   userNotFound,
-} from "../../errors/index";
+} from "../../../infra/error/index";
 import AuthStrategy from ".";
 import TokenManager from "../token";
 import PasswordService from "../password";
-import UserRepository from "../../../infra/repository/user";
+import UserRepository from "../../../infra/repositories/user";
 import { AuthResponse } from "../../../application/dto/user";
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
 
 type userCredentials = {
   email: string;
   password: string;
 };
 
-@Injectable({
-  key: EmailPasswordStrategy,
-  scope: BINDINGSCOPE.SINGLETON,
-})
 class EmailPasswordStrategy extends AuthStrategy {
   private userRepository: UserRepository;
   private passwordService: PasswordService;

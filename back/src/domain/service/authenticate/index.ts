@@ -1,15 +1,11 @@
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
 import { AuthResponse } from "../../../application/dto/user";
 import { Injectable } from "../../../utils/inversify";
 
-enum AuthStrategies {
+export enum AuthStrategies {
   EMAILPASSWORD = "EmailPassword",
+  AZURE = "Azure",
 }
 
-@Injectable({
-  key: AuthStrategy,
-  scope: BINDINGSCOPE.SINGLETON,
-})
 abstract class AuthStrategy {
   public async authenticate(credentials: any): Promise<AuthResponse> {
     const authResult = await this.authenticateUser(credentials);

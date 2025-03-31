@@ -1,17 +1,15 @@
 import { inject } from "inversify";
+
 import AuthStrategy from ".";
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
-import { AuthResponse } from "../../../application/dto/user";
-import AzureAuthProvider from "../../../infra/provider/auth/azure";
-import { Injectable } from "../../../utils/inversify";
-import UserRepository from "../../../infra/repository/user";
-import { userInactive, userNotFound } from "../../errors/index";
 import TokenManager from "../token";
 
-@Injectable({
-  key: AzureAuthService,
-  scope: BINDINGSCOPE.SINGLETON,
-})
+import { AuthResponse } from "../../../application/dto/user";
+
+import AzureAuthProvider from "../../../infra/provider/auth/azure";
+import UserRepository from "../../../infra/repositories/user";
+
+import { userInactive, userNotFound } from "../../../infra/error/index";
+
 class AzureAuthService extends AuthStrategy {
   private azureAuthProvider: AzureAuthProvider;
   private userRepository: UserRepository;
@@ -50,10 +48,9 @@ class AzureAuthService extends AuthStrategy {
       code,
       redirectUri
     );
-    const { email } =
-      await this.azureAuthProvider.getUserInfo(azureAccessToken);
+    const userInfo = await this.azureAuthProvider.getUserInfo(azureAccessToken);
 
-    return email;
+    return userInfo.email;
   }
 }
 

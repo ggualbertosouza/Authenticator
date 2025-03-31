@@ -4,7 +4,7 @@ import { Injectable } from "../../../utils/inversify";
 import TokenManager from "../../../domain/service/token";
 import { BaseMiddleware } from ".";
 import { NextFunction } from "express";
-import { invalidToken } from "../../../domain/errors";
+import { invalidToken } from "../../../infra/error";
 import { RequestAdapter, ResponseAdapter } from "../../../@types/server";
 import { BINDINGSCOPE } from "../../../@types/inverisfy";
 

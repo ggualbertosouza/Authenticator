@@ -1,5 +1,5 @@
 import { randomBytes, pbkdf2 } from "node:crypto";
-import { BadRequest } from "../../errors/statusError";
+import { BadRequest } from "../../../infra/error/statusError";
 import { Injectable } from "../../../utils/inversify";
 import { BINDINGSCOPE } from "../../../@types/inverisfy";
 

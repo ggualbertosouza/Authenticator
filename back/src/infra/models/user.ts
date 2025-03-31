@@ -1,7 +1,7 @@
 import { prop } from "@typegoose/typegoose";
 
 import BaseModel from ".";
-import { Roles } from "../../@types/roles";
+import { Roles } from "../../domain/constants/roles";
 
 class User extends BaseModel<User> {
   @prop({ required: true, type: String })

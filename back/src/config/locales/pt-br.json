@@ -1,13 +1,16 @@
 {
-  "user_not_found": "Usuário não encontrado",
-  "user_inactive": "Usuário inativo. Por favor, entre em contato com o administrador.",
-  "unable_account": "Não foi possível criar a conta. Verifique os dados fornecidos e tente novamente.",
-  "user_unauthorized": "Acesso não autorizado. Verifique suas credenciais e tente novamente.",
-  "credentials_invalid": "E-mail ou senha inválidos. Por favor, verifique suas credenciais.",
-  "INTERNAL_SERVER_ERROR": "Erro interno do servidor",
-  "refresh_token_error": "Erro ao criar refresh token",
-  "invalid_token": "Token inválido",
-  "azure_url_generate": "Failed to generate Azure auth URL",
-  "azure_acquire_error": "Failed to acquire Azure tokens",
-  "azure_user_info": "Failed to fetch Azure user info"
+	"user_not_found": "Usuário não encontrado",
+	"user_inactive": "Usuário inativo. Por favor, entre em contato com o administrador.",
+	"unable_account": "Não foi possível criar a conta. Verifique os dados fornecidos e tente novamente.",
+	"user_unauthorized": "Acesso não autorizado. Verifique suas credenciais e tente novamente.",
+	"credentials_invalid": "E-mail ou senha inválidos. Por favor, verifique suas credenciais.",
+	"INTERNAL_SERVER_ERROR": "Erro interno do servidor",
+	"refresh_token_error": "Erro ao criar refresh token",
+	"invalid_token": "Token inválido",
+	"azure_url_generate": "Failed to generate Azure auth URL",
+	"azure_acquire_error": "Failed to acquire Azure tokens",
+	"azure_user_info": "Failed to fetch Azure user info",
+	"No matching bindings found for serviceIdentifier": " EmailPassword",
+	"No binding found for strategy": " EmailPassword",
+	"Ambiguous match found for serviceIdentifier": " EmailPassword\nRegistered bindings:\n EmailPasswordStrategy\n EmailPasswordStrategy"
 }

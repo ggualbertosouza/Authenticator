@@ -1,13 +1,16 @@
 import "reflect-metadata";
+import { glob } from "glob";
 import path from "node:path";
 import { Container } from "inversify";
 import { Connection } from "mongoose";
-import { glob } from "glob";
 
 import Database from "./config/db";
 import { __dirname } from "./utils/dirname";
 import { registeredDependencies } from "./utils/inversify";
 import { BINDINGSCOPE, METADATA } from "./@types/inverisfy";
+import AuthStrategy, { AuthStrategies } from "./domain/service/authenticate";
+import EmailPasswordStrategy from "./domain/service/authenticate/emailPassword";
+import AzureAuthService from "./domain/service/authenticate/azure";
 
 class AppContainer {
   private static instance: Container;
@@ -16,7 +19,7 @@ class AppContainer {
     if (!AppContainer.instance) {
       const container = new Container();
 
-      await AppContainer.injectDependecies(container, registeredDependencies);
+      AppContainer.injectDependecies(container, registeredDependencies);
       await AppContainer.loadDb(container);
       AppContainer.instance = container;
     }
@@ -24,10 +27,10 @@ class AppContainer {
     return AppContainer.instance;
   }
 
-  private static async injectDependecies(
+  private static injectDependecies(
     container: Container,
     registeredDependencies: any[]
-  ): Promise<void> {
+  ): void {
     for (const module of registeredDependencies) {
       const bindingMetadata = Reflect.getMetadata(METADATA.INJECTABLE, module);
 
@@ -54,6 +57,22 @@ class AppContainer {
         }
       }
     }
+
+    container
+      .bind(AuthStrategies.EMAILPASSWORD)
+      .to(EmailPasswordStrategy)
+      .inSingletonScope();
+
+    container
+      .bind(AuthStrategies.AZURE)
+      .to(AzureAuthService)
+      .inSingletonScope();
+
+    container
+      .bind(AuthStrategy)
+      .toFactory((context) => (strategy: AuthStrategies) => {
+        return context.container.get(strategy);
+      });
   }
 
   private static async loadDb(container: Container): Promise<void> {

@@ -1,6 +1,6 @@
 import i18n from "../../../config/i18n";
 import { Request, Response, NextFunction } from "express";
-import HttpError from "../../../domain/errors/httpErrors";
+import HttpError from "../../../infra/error/httpErrors";
 
 export const ErrorHandler = (
   err: HttpError,

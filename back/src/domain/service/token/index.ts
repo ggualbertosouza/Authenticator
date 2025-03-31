@@ -5,8 +5,8 @@ import { Injectable } from "../../../utils/inversify";
 
 import CronJobManager from "../cron";
 import { TOKEN } from "../../../config";
-import TokenRepository from "../../../infra/repository/token";
-import { invalidToken, refreshTokenError } from "../../errors/index";
+import TokenRepository from "../../../infra/repositories/token";
+import { invalidToken, refreshTokenError } from "../../../infra/error/index";
 
 import { TokenPayload } from "../../../@types/token";
 import { BINDINGSCOPE } from "../../../@types/inverisfy";

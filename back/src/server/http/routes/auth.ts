@@ -23,6 +23,10 @@ class AuthRouter extends AbstractRouter {
       "/api/user/login",
       this.authController.loginWithEmailPassword()
     );
+    this.router.post(
+      "/oauth/azure/callback",
+      this.authController.azureAuthenticate()
+    );
   }
 }
 

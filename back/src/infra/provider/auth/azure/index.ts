@@ -7,7 +7,7 @@ import {
   azureAcquireTokenError,
   azureFetchError,
   azureGenerateUrlError,
-} from "../../../../domain/errors/index";
+} from "../../../error/index";
 
 interface UserInfo {
   id: string;

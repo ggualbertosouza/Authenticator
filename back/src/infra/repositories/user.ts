@@ -3,15 +3,16 @@ import { Injectable } from "../../utils/inversify";
 
 import User from "../models/user";
 import { BINDINGSCOPE } from "../../@types/inverisfy";
+import { IUserRepository } from "../../domain/repositories/user";
 
 @Injectable({
   key: UserRepository,
   scope: BINDINGSCOPE.SINGLETON,
 })
-class UserRepository {
+class UserRepository implements IUserRepository {
   private userModel = User.getModel();
 
-  public async createUser(userData: Omit<User, "active" | "role">) {
+  public async create(userData: Omit<User, "active" | "role">) {
     const user = await this.userModel.create(userData);
 
     return {
@@ -21,13 +22,13 @@ class UserRepository {
     };
   }
 
-  public async findUser(id: mongoose.Types.ObjectId) {
+  public async findById(id: mongoose.Types.ObjectId) {
     return await this.userModel
       .findOne({ _id: id }, { active: 1, email: 1, name: 1, role: 1 })
       .lean();
   }
 
-  public async findUserByEmail(email: string) {
+  public async findByEmail(email: string) {
     return await this.userModel
       .findOne(
         { email },
@@ -36,7 +37,7 @@ class UserRepository {
       .lean();
   }
 
-  public async editUser(userData: Partial<User>) {
+  public async update(userData: Partial<User>) {
     const userUpdated = await this.userModel
       .findOneAndUpdate(
         { email: userData.email },
@@ -55,8 +56,8 @@ class UserRepository {
 
     return userUpdated;
   }
-
-  public async removeUser(id: mongoose.Types.ObjectId) {
+ 
+  public async delete(id: mongoose.Types.ObjectId) {
     const user = await this.userModel.findOneAndUpdate(
       { _id: id },
       { $set: { active: false } },
