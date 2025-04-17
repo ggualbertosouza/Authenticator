@@ -6,7 +6,7 @@ const GlobalComponents = () => {
   return (
     <>
       <Toaster />
-      <AuthRedirect />
+      {/*<AuthRedirect />*/}
       <GlobalLoading />
     </>
   );

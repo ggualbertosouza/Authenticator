@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "./globals.css";
 
 import AppProviders from "@/provider";
 import { globalMetadata } from "@/metadata/global";
