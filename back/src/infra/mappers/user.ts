@@ -9,7 +9,7 @@ class UserMapper {
       name: input.name,
       email: input.email,
       password: input.password,
-      role: Roles.GUEST,
+      role: Roles.Reader,
       active: true,
     };
   }

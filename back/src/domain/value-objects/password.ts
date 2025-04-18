@@ -8,7 +8,7 @@ class Password {
 
   public static create(
     password: string,
-    isHashed: boolean = false
+    isHashed: boolean = false,
   ): Either<PasswordError, Password> {
     if (isHashed) return success(new Password(password));
 
@@ -27,6 +27,7 @@ class Password {
     return success(new Password(password));
   }
 
+  // #TODO Retirar bcrypt da camada de domain
   public async compare(password: string): Promise<boolean> {
     return await bcrypt.compare(password, this._password);
   }

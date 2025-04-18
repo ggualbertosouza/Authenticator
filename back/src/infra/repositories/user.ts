@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Injectable } from "../../utils/inversify";
+import { Injectable } from "../../presentation/https/utils/inversify";
 
 import User from "../models/user";
 import { BINDINGSCOPE } from "../../@types/inverisfy";
@@ -32,7 +32,7 @@ class UserRepository implements IUserRepository {
     return await this.userModel
       .findOne(
         { email },
-        { _id: 1, email: 1, name: 1, role: 1, password: 1, active: 1 }
+        { _id: 1, email: 1, name: 1, role: 1, password: 1, active: 1 },
       )
       .lean();
   }
@@ -50,18 +50,18 @@ class UserRepository implements IUserRepository {
             role: 1,
             active: 1,
           },
-        }
+        },
       )
       .lean();
 
     return userUpdated;
   }
- 
+
   public async delete(id: mongoose.Types.ObjectId) {
     const user = await this.userModel.findOneAndUpdate(
       { _id: id },
       { $set: { active: false } },
-      { new: true }
+      { new: true },
     );
 
     return !!user;

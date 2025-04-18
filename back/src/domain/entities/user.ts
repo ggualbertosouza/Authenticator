@@ -12,10 +12,10 @@ class User {
     private readonly _name: string,
     private readonly _email: Email,
     private readonly _password: Password,
-    private _role: Roles = Roles.GUEST,
+    private _role: Roles = Roles.Reader,
     private _active: boolean = true,
     private readonly _createdAt?: Date,
-    private _updatedAt?: Date
+    private _updatedAt?: Date,
   ) {}
 
   public isActive(): boolean {
@@ -44,8 +44,8 @@ class User {
         emailResult.value,
         passwordResult.value,
         role,
-        active
-      )
+        active,
+      ),
     );
   }
 
@@ -53,9 +53,11 @@ class User {
     return {
       id: this._id,
       name: this._name,
-      email: this._email,
+      email: this._email.value,
       active: this._active,
       role: this._role,
+      createdAt: this._createdAt,
+      updatedAt: this._updatedAt,
     };
   }
 }

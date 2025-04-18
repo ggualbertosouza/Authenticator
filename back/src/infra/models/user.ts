@@ -13,7 +13,7 @@ class User extends BaseModel<User> {
   @prop({ required: true, type: String })
   password!: string;
 
-  @prop({ required: true, type: String, enum: Roles, default: Roles.GUEST })
+  @prop({ required: true, type: String, enum: Roles, default: Roles.Reader })
   role!: string;
 
   @prop({ required: true, type: Boolean, default: true })
