@@ -1,21 +1,19 @@
-import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { inject } from "inversify";
-import { Injectable } from "../../../utils/inversify";
 
-import CronJobManager from "../cron";
-import { TOKEN } from "../../../config";
-import TokenRepository from "../../../infra/repositories/token";
-import { invalidToken, refreshTokenError } from "../../../infra/error/index";
+import { TokenPayload } from "../../@types/token";
+import { invalidToken, refreshTokenError } from "../error";
 
-import { TokenPayload } from "../../../@types/token";
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
+import CronJobManager from "./cron";
+import { TOKEN } from "../../config";
 
-@Injectable({
-  key: TokenManager,
-  scope: BINDINGSCOPE.SINGLETON,
-})
-class TokenManager {
+import TokenRepository from "../repositories/token";
+import { Injectable } from "../../presentation/https/utils/inversify";
+import { ITokenManager } from "../../domain/service/tokens";
+
+@Injectable({ key: TokenManager })
+class TokenManager implements ITokenManager {
   private readonly ACCESS_TOKEN_SECRET: string = TOKEN.jwt_secret;
   private readonly REFRESH_TOKEN_SECRET: string = TOKEN.refresh_token_secret;
 
@@ -27,10 +25,12 @@ class TokenManager {
 
   constructor(
     @inject(TokenRepository) tokenRepository: TokenRepository,
-    @inject(CronJobManager) cronJobManager: CronJobManager
+    @inject(CronJobManager) cronJobManager: CronJobManager,
   ) {
     this.tokenRepository = tokenRepository;
     this.cronJobManager = cronJobManager;
+
+    this.cleanExpiredTokens();
   }
 
   // #TODO Alterar forma como é pego userId -> Melhorar tipagem da entidade
@@ -40,7 +40,7 @@ class TokenManager {
       this.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "1d",
-      }
+      },
     );
   }
 
@@ -53,7 +53,7 @@ class TokenManager {
   }
 
   public async generateRefreshToken(
-    userId: mongoose.Types.ObjectId
+    userId: mongoose.Types.ObjectId,
   ): Promise<string> {
     try {
       const existingToken = await this.tokenRepository.findByUser(userId);
@@ -79,9 +79,9 @@ class TokenManager {
       await this.tokenRepository.create(
         refreshToken,
         new Date(
-          Date.now() + this.refreshTokenExpirationDays * 24 * 60 * 60 * 1000
+          Date.now() + this.refreshTokenExpirationDays * 24 * 60 * 60 * 1000,
         ),
-        userId
+        userId,
       );
 
       return refreshToken;
@@ -111,7 +111,7 @@ class TokenManager {
     return !!tokenDoc && tokenDoc.expiresAt > new Date();
   }
 
-  private cleanExpiredTokens() {
+  public cleanExpiredTokens() {
     this.cronJobManager.addJob(
       "cleanExpiredTokens",
       "0 0 * * *",
@@ -119,7 +119,7 @@ class TokenManager {
         this.tokenRepository.deleteExpiredtokens();
         console.info("Expired tokens removed!");
       },
-      true
+      true,
     );
   }
 }

@@ -2,13 +2,14 @@ import { Roles } from "../../../domain/constants/roles";
 import User from "../../../domain/entities/user";
 
 class UserOutputDto {
-  constructor(
+  private constructor(
     id: string | undefined,
     name: string,
     email: string,
     active: boolean,
     role: Roles,
     createdAt?: Date,
+    updatedAt?: Date,
   ) {}
 
   static fromUser(user: {
@@ -18,6 +19,7 @@ class UserOutputDto {
     active: boolean;
     role: Roles;
     createdAt?: Date;
+    updatedAt?: Date;
   }) {
     return new UserOutputDto(
       user.id,
@@ -26,6 +28,7 @@ class UserOutputDto {
       user.active,
       user.role,
       user.createdAt,
+      user.updatedAt,
     );
   }
 }

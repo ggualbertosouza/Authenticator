@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Injectable } from "../../presentation/https/utils/inversify";
 
 import User from "../models/user";
+import UserDomain from "../../domain/entities/user";
 import { BINDINGSCOPE } from "../../@types/inverisfy";
 import { IUserRepository } from "../../domain/repositories/user";
 
@@ -12,14 +13,8 @@ import { IUserRepository } from "../../domain/repositories/user";
 class UserRepository implements IUserRepository {
   private userModel = User.getModel();
 
-  public async create(userData: Omit<User, "active" | "role">) {
-    const user = await this.userModel.create(userData);
-
-    return {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    };
+  public async create(userData: UserDomain) {
+    return await this.userModel.create(userData.toJSON());
   }
 
   public async findById(id: mongoose.Types.ObjectId) {
@@ -37,10 +32,10 @@ class UserRepository implements IUserRepository {
       .lean();
   }
 
-  public async update(userData: Partial<User>) {
+  public async update(userData: UserDomain) {
     const userUpdated = await this.userModel
       .findOneAndUpdate(
-        { email: userData.email },
+        { email: userData.toJSON().email },
         { $set: userData },
         {
           new: true,

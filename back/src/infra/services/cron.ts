@@ -1,11 +1,7 @@
 import cron from "node-cron";
-import { Injectable } from "../../../utils/inversify";
-import { BINDINGSCOPE } from "../../../@types/inverisfy";
+import { Injectable } from "../../presentation/https/utils/inversify";
 
-@Injectable({
-  key: CronJobManager,
-  scope: BINDINGSCOPE.SINGLETON,
-})
+@Injectable({ key: CronJobManager })
 class CronJobManager {
   private jobs: Map<string, cron.ScheduledTask>;
 
@@ -17,7 +13,7 @@ class CronJobManager {
     id: string,
     schedule: string,
     task: () => void,
-    runOnInit: boolean = false
+    runOnInit: boolean = false,
   ) {
     if (this.jobs.has(id)) {
       console.error(`Job already running ${id}`);

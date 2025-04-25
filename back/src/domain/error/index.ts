@@ -1,12 +1,5 @@
 abstract class DomainError {
-  constructor(
-    public readonly code: string,
-    public readonly message: string
-  ) {}
-
-  public is<T extends DomainError>(errorType: new (...args: any[]) => T) {
-    return this instanceof errorType;
-  }
+  constructor(public readonly code: string) {}
 }
 
 export default DomainError;
