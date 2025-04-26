@@ -28,7 +28,7 @@ class PasswordService implements IPasswordService {
     });
   }
 
-  public async matches(password: string, storedHash: string): Promise<boolean> {
+  public async compare(password: string, storedHash: string): Promise<boolean> {
     const [salt, hash] = storedHash.split(":");
 
     return await new Promise<boolean>((resolve, reject) => {

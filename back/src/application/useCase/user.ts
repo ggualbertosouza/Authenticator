@@ -12,6 +12,7 @@ import UserRepository from "../../infra/repositories/user";
 import { Injectable } from "../../presentation/https/utils/inversify";
 import PasswordService from "../../infra/services/password";
 import { IPasswordService } from "../../domain/service/password";
+import { InvalidUser } from "../../domain/error/user";
 
 @Injectable({ key: UserUseCase })
 class UserUseCase {
@@ -32,26 +33,22 @@ class UserUseCase {
     const { email, name, password } = data;
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
-    // #TODO Tratar o erro corretamente
-    if (userAlreadyExists) throw new Error();
+    if (userAlreadyExists) throw new InvalidUser();
 
     const hashedPassword = await this.passwordService.encrypt(password);
-    if (!hashedPassword) throw new Error();
 
-    const userObject = User.create({
+    const user = User.create({
       name,
       email,
       password: hashedPassword,
       active: true,
       role: Roles.Reader,
     });
-    if (userObject.isLeft()) throw new Error();
 
-    const user = userObject.value;
-    const savedUser = await this.userRepository.create(user);
+    const savedUser = await this.userRepository.create(user.toJSON());
+    if (!savedUser) throw new Error();
 
-    // Como devo validar os dados que devem ser retornados para usuário na camada de domínio?
-    return UserOutputDto.fromUser(user.toJSON());
+    return UserOutputDto.fromUser(user);
   }
 
   public async update() {}

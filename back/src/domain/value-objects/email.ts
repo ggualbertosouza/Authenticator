@@ -1,5 +1,4 @@
-import { Either, fail, success } from "../error/either";
-import UserError from "../error/user";
+import { InvalidEmail } from "../error/user";
 
 class Email {
   private readonly _email: string;
@@ -8,13 +7,11 @@ class Email {
     this._email = _email;
   }
 
-  public static create(email: string): Either<UserError, Email> {
+  public static create(email: string): Email {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return fail(UserError.invalidEmail());
-    }
+    if (!emailRegex.test(email)) throw new InvalidEmail();
 
-    return success(new Email(email));
+    return new Email(email);
   }
 
   public get value(): string {

@@ -3,9 +3,6 @@ import { Roles } from "../constants/roles";
 import Email from "../value-objects/email";
 import Password from "../value-objects/password";
 
-import DomainError from "../error";
-import { Either, fail, success } from "../error/either";
-
 type userToCreate = {
   name: string;
   email: string;
@@ -47,30 +44,23 @@ class User {
     return this._active;
   }
 
-  public static create(user: userToCreate): Either<DomainError, User> {
-    const emailResult = Email.create(user.email);
-    if (emailResult.isLeft()) return fail(emailResult.value);
-
-    const passwordResult = Password.create(user.password);
-    if (passwordResult.isLeft()) return fail(passwordResult.value);
-
-    return success(
-      new User(
-        user.name,
-        emailResult.value,
-        passwordResult.value,
-        user.active,
-        user.role,
-        user.createdAt,
-        user.updatedAt,
-      ),
+  public static create(user: userToCreate): User {
+    return new User(
+      user.name,
+      Email.create(user.email),
+      Password.create(user.password),
+      user.active,
+      user.role,
+      user.createdAt,
+      user.updatedAt,
     );
   }
 
   public toJSON() {
     return {
       name: this._name,
-      email: this._email.value,
+      email: this._email,
+      password: this._password,
       active: this._active,
       role: this._role,
       createdAt: this._createdAt,
