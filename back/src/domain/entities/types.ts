@@ -1,6 +1,7 @@
 import { Roles } from "../constants/roles";
 
 export interface UserToCreate {
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -11,6 +12,7 @@ export interface UserToCreate {
 }
 
 export interface UserJSON {
+  id: string;
   name: string;
   email: string;
   password: string;

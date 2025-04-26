@@ -19,4 +19,10 @@ class InvalidUser extends DomainError {
   }
 }
 
-export { InvalidEmail, InvalidPassword, InvalidUser };
+class UserDisabled extends DomainError {
+  constructor() {
+    super(ErrorCode.USER_DISABLED);
+  }
+}
+
+export { InvalidEmail, InvalidPassword, InvalidUser, UserDisabled };

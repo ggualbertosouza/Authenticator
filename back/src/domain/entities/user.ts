@@ -5,6 +5,7 @@ import Password from "../value-objects/password";
 import { UserToCreate, UserJSON } from "./types";
 
 class User {
+  private readonly _id: string;
   private readonly _name: string;
   private readonly _email: Email;
   private readonly _password: Password;
@@ -14,6 +15,7 @@ class User {
   private readonly _updatedAt: Date;
 
   private constructor(
+    id: string,
     name: string,
     email: Email,
     password: Password,
@@ -22,6 +24,7 @@ class User {
     createdAt?: Date,
     updatedAt?: Date,
   ) {
+    this._id = id;
     this._name = name;
     this._email = email;
     this._password = password;
@@ -37,6 +40,7 @@ class User {
 
   public static create(user: UserToCreate): User {
     return new User(
+      user.id,
       user.name,
       Email.create(user.email),
       Password.create(user.password),
@@ -49,6 +53,7 @@ class User {
 
   public toJSON(): UserJSON {
     return {
+      id: this._id,
       name: this._name,
       email: this._email.value,
       password: this._password.value,

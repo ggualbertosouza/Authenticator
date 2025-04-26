@@ -1,10 +1,12 @@
-class CreateUserInputDto {
-  // #TODO Sanitização aqui
-  constructor(
-    public readonly name: string,
-    public readonly email: string,
-    public readonly password: string,
-  ) {}
-}
+type CreateUserInputDto = {
+  name: string;
+  email: string;
+  password: string;
+};
 
-export { CreateUserInputDto };
+type UpdateUserInputDto = {
+  name?: string;
+  email?: string;
+};
+
+export { CreateUserInputDto, UpdateUserInputDto };

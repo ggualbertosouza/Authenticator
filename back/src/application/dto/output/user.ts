@@ -12,9 +12,9 @@ class UserOutputDto {
     updatedAt?: Date,
   ) {}
 
-  static fromUser(user: UserJSON, id: string) {
+  static fromEntity(user: UserJSON & { id: string }) {
     return new UserOutputDto(
-      id,
+      user.id,
       user.name,
       user.email,
       user.active,

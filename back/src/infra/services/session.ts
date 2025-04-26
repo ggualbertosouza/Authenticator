@@ -11,9 +11,10 @@ import { TOKEN } from "../../config";
 import TokenRepository from "../repositories/token";
 import { Injectable } from "../../presentation/https/utils/inversify";
 import { ITokenManager } from "../../domain/service/tokens";
+import { ISessionService } from "../../domain/service/session";
 
-@Injectable({ key: TokenManager })
-class TokenManager implements ITokenManager {
+@Injectable({ key: SessionService })
+class SessionService implements ISessionService {
   private readonly ACCESS_TOKEN_SECRET: string = TOKEN.jwt_secret;
   private readonly REFRESH_TOKEN_SECRET: string = TOKEN.refresh_token_secret;
 
@@ -33,7 +34,6 @@ class TokenManager implements ITokenManager {
     this.cleanExpiredTokens();
   }
 
-  // #TODO Alterar forma como é pego userId -> Melhorar tipagem da entidade
   public generateAccessToken(user: any): string {
     return jwt.sign(
       { userId: String(user._id), role: user.role },
@@ -52,9 +52,7 @@ class TokenManager implements ITokenManager {
     }
   }
 
-  public async generateRefreshToken(
-    userId: mongoose.Types.ObjectId,
-  ): Promise<string> {
+  public async generateRefreshToken(userId: string): Promise<string> {
     try {
       const existingToken = await this.tokenRepository.findByUser(userId);
 
@@ -105,13 +103,12 @@ class TokenManager implements ITokenManager {
     await this.tokenRepository.delete(token);
   }
 
-  // Verify if is valid token
   public async isValidRefreshToken(token: string): Promise<boolean> {
     const tokenDoc = await this.tokenRepository.findByToken(token);
     return !!tokenDoc && tokenDoc.expiresAt > new Date();
   }
 
-  public cleanExpiredTokens() {
+  private cleanExpiredTokens() {
     this.cronJobManager.addJob(
       "cleanExpiredTokens",
       "0 0 * * *",
@@ -124,4 +121,4 @@ class TokenManager implements ITokenManager {
   }
 }
 
-export default TokenManager;
+export default SessionService;

@@ -1,66 +1,47 @@
-import mongoose from "mongoose";
+import { inject } from "inversify";
+import { Db, Collection, ObjectId } from "mongodb";
 import { Injectable } from "../../presentation/https/utils/inversify";
 
-import User from "../models/user";
-import UserDomain from "../../domain/entities/user";
-import { BINDINGSCOPE } from "../../@types/inverisfy";
+import { UserJSON } from "../../domain/entities/types";
 import { IUserRepository } from "../../domain/repositories/user";
 
-@Injectable({
-  key: UserRepository,
-  scope: BINDINGSCOPE.SINGLETON,
-})
-class UserRepository implements IUserRepository {
-  private userModel = User.getModel();
+@Injectable({ key: MongoDbUserRepository })
+class MongoDbUserRepository implements IUserRepository {
+  private readonly collection: Collection;
 
-  public async create(userData: UserDomain) {
-    return await this.userModel.create(userData.toJSON());
+  constructor(@inject("mongoDbConnection") db: Db) {
+    this.collection = db.collection("users");
   }
 
-  public async findById(id: mongoose.Types.ObjectId) {
-    return await this.userModel
-      .findOne({ _id: id }, { active: 1, email: 1, name: 1, role: 1 })
-      .lean();
+  createId(id?: string): string {
+    if (!id) return new ObjectId().toHexString();
+    if (ObjectId.isValid(id)) return id;
+    return new ObjectId().toHexString();
   }
 
-  public async findByEmail(email: string) {
-    return await this.userModel
-      .findOne(
-        { email },
-        { _id: 1, email: 1, name: 1, role: 1, password: 1, active: 1 },
-      )
-      .lean();
+  public async create(userData: UserJSON): Promise<{ id: string } | null> {
+    const userToInsert = { ...userData, _id: new ObjectId(userData.id) };
+    const result = await this.collection.insertOne(userToInsert);
+
+    if (result.acknowledged) return { id: result.insertedId.toHexString() };
+
+    return null;
   }
 
-  public async update(userData: UserDomain) {
-    const userUpdated = await this.userModel
-      .findOneAndUpdate(
-        { email: userData.toJSON().email },
-        { $set: userData },
-        {
-          new: true,
-          projection: {
-            name: 1,
-            email: 1,
-            role: 1,
-            active: 1,
-          },
-        },
-      )
-      .lean();
-
-    return userUpdated;
+  findById(id: string): Promise<UserJSON | null> {
+    throw new Error("Method not implemented.");
   }
 
-  public async delete(id: mongoose.Types.ObjectId) {
-    const user = await this.userModel.findOneAndUpdate(
-      { _id: id },
-      { $set: { active: false } },
-      { new: true },
-    );
+  findByEmail(email: string): Promise<UserJSON | null> {
+    throw new Error("Method not implemented.");
+  }
+  update(id: string, userData: Partial<UserJSON>): Promise<UserJSON | null> {
+    throw new Error("Method not implemented.");
+  }
 
-    return !!user;
+  delete(id: string): Promise<boolean | null> {
+    throw new Error("Method not implemented.");
   }
 }
 
-export default UserRepository;
+export default MongoDbUserRepository;
