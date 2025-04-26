@@ -1,18 +1,18 @@
 import { inject } from "inversify";
+import { Injectable } from "../../presentation/https/utils/inversify";
 
 import { UserOutputDto } from "../dto/output/user";
 import { CreateUserInputDto } from "../dto/input/user";
 
-import DomainError from "../../domain/error";
-import User from "../../domain/entities/user";
 import { Roles } from "../../domain/constants/roles";
+
+import User from "../../domain/entities/user";
+import { InvalidUser } from "../../domain/error/user";
+import UserRepository from "../../infra/repositories/user";
 import { IUserRepository } from "../../domain/repositories/user";
 
-import UserRepository from "../../infra/repositories/user";
-import { Injectable } from "../../presentation/https/utils/inversify";
 import PasswordService from "../../infra/services/password";
 import { IPasswordService } from "../../domain/service/password";
-import { InvalidUser } from "../../domain/error/user";
 
 @Injectable({ key: UserUseCase })
 class UserUseCase {
@@ -27,9 +27,7 @@ class UserUseCase {
     this.passwordService = passwordService;
   }
 
-  public async create(
-    data: CreateUserInputDto,
-  ): Promise<UserOutputDto | DomainError> {
+  public async create(data: CreateUserInputDto): Promise<UserOutputDto> {
     const { email, name, password } = data;
 
     const userAlreadyExists = await this.userRepository.findByEmail(email);
@@ -48,7 +46,7 @@ class UserUseCase {
     const savedUser = await this.userRepository.create(user.toJSON());
     if (!savedUser) throw new Error();
 
-    return UserOutputDto.fromUser(user);
+    return UserOutputDto.fromUser(user.toJSON(), savedUser.id);
   }
 
   public async update() {}

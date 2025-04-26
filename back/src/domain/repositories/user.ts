@@ -1,9 +1,10 @@
+import { UserJSON } from "../entities/types";
 import User from "../entities/user";
 
 export interface IUserRepository {
-  create(userData: User): Promise<boolean | null>;
-  findById(id: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
-  update(userData: Partial<User>): Promise<boolean | null>;
+  create(userData: UserJSON): Promise<(UserJSON & { id: string }) | null>;
+  findById(id: string): Promise<UserJSON | null>;
+  findByEmail(email: string): Promise<UserJSON | null>;
+  update(userData: Partial<UserJSON>): Promise<boolean | null>;
   delete(id: string): Promise<boolean | null>;
 }

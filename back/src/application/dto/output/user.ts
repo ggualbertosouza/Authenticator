@@ -1,9 +1,9 @@
 import { Roles } from "../../../domain/constants/roles";
-import User from "../../../domain/entities/user";
+import { UserJSON } from "../../../domain/entities/types";
 
 class UserOutputDto {
   private constructor(
-    id: string | undefined,
+    id: string,
     name: string,
     email: string,
     active: boolean,
@@ -12,17 +12,9 @@ class UserOutputDto {
     updatedAt?: Date,
   ) {}
 
-  static fromUser(user: {
-    id: string | undefined;
-    name: string;
-    email: string;
-    active: boolean;
-    role: Roles;
-    createdAt?: Date;
-    updatedAt?: Date;
-  }) {
+  static fromUser(user: UserJSON, id: string) {
     return new UserOutputDto(
-      user.id,
+      id,
       user.name,
       user.email,
       user.active,

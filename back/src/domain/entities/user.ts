@@ -2,16 +2,7 @@ import { Roles } from "../constants/roles";
 
 import Email from "../value-objects/email";
 import Password from "../value-objects/password";
-
-type userToCreate = {
-  name: string;
-  email: string;
-  password: string;
-  role?: Roles;
-  active?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-};
+import { UserToCreate, UserJSON } from "./types";
 
 class User {
   private readonly _name: string;
@@ -44,7 +35,7 @@ class User {
     return this._active;
   }
 
-  public static create(user: userToCreate): User {
+  public static create(user: UserToCreate): User {
     return new User(
       user.name,
       Email.create(user.email),
@@ -56,11 +47,11 @@ class User {
     );
   }
 
-  public toJSON() {
+  public toJSON(): UserJSON {
     return {
       name: this._name,
-      email: this._email,
-      password: this._password,
+      email: this._email.value,
+      password: this._password.value,
       active: this._active,
       role: this._role,
       createdAt: this._createdAt,

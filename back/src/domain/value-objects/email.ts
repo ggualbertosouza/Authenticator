@@ -7,15 +7,18 @@ class Email {
     this._email = _email;
   }
 
-  public static create(email: string): Email {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) throw new InvalidEmail();
+  public get value(): string {
+    return this._email;
+  }
 
+  public static create(email: string): Email {
+    if (!this.validate(email)) throw new InvalidEmail();
     return new Email(email);
   }
 
-  public get value(): string {
-    return this._email;
+  private static validate(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 }
 
